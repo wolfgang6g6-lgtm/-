@@ -1,0 +1,162 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* 公文编辑器样式 - GB/T 9704-2020 标准 */
+
+/* 字号对照：二号=22pt，三号=16pt，四号=14pt */
+
+.document-editor {
+  font-family: "FangSong_GB2312", "仿宋_GB2312", "FangSong", "仿宋", "STFangsong", serif;
+  font-size: 16pt;
+  line-height: 28pt;
+  font-weight: normal;
+}
+
+/* 标题：2号方正小标宋简体（不加粗） */
+.document-editor .doc-title,
+.document-editor h1 {
+  font-family: "FZXiaoBiaoSong-B05S", "方正小标宋简体", "FZXiaoBiaoSong", "SimSun", "宋体", serif;
+  font-size: 22pt;
+  font-weight: normal;
+  text-align: center;
+  line-height: 1.5;
+  margin: 0 0 1em 0;
+}
+
+/* 一级标题：3号黑体（不加粗）- 如"一、" */
+.document-editor .heading-1,
+.document-editor h2 {
+  font-family: "SimHei", "黑体", "STHeiti", "Microsoft YaHei", sans-serif;
+  font-size: 16pt;
+  font-weight: normal;
+  line-height: 28pt;
+}
+
+/* 二级标题：3号楷体（加粗）- 如"（一）" */
+.document-editor .heading-2,
+.document-editor h3 {
+  font-family: "KaiTi_GB2312", "楷体_GB2312", "KaiTi", "楷体", "STKaiti", serif;
+  font-size: 16pt;
+  font-weight: bold;
+  line-height: 28pt;
+}
+
+/* 三级标题：3号仿宋（加粗）- 如"1." */
+.document-editor .heading-3,
+.document-editor h4 {
+  font-family: "FangSong_GB2312", "仿宋_GB2312", "FangSong", "仿宋", "STFangsong", serif;
+  font-size: 16pt;
+  font-weight: bold;
+  line-height: 28pt;
+}
+
+/* 正文汉字：3号仿宋GB-2312（不加粗） */
+.document-editor p,
+.document-editor .doc-content {
+  font-family: "FangSong_GB2312", "仿宋_GB2312", "FangSong", "仿宋", "STFangsong", serif;
+  font-size: 16pt;
+  font-weight: normal;
+  line-height: 28pt;
+  text-align: justify;
+}
+
+/* 日期落款：右对齐 */
+.document-editor .doc-date {
+  font-family: "FangSong_GB2312", "仿宋_GB2312", "FangSong", "仿宋", "STFangsong", serif;
+  font-size: 16pt;
+  font-weight: normal;
+  line-height: 28pt;
+  text-align: right;
+  padding-right: 4em;
+}
+
+/* 署名：右对齐 */
+.document-editor .doc-signature {
+  font-family: "FangSong_GB2312", "仿宋_GB2312", "FangSong", "仿宋", "STFangsong", serif;
+  font-size: 16pt;
+  font-weight: normal;
+  line-height: 28pt;
+  text-align: right;
+  padding-right: 4em;
+}
+
+/* 数字使用 Times New Roman */
+.document-editor {
+  font-variant-numeric: lining-nums;
+}
+
+/* 打印样式 */
+@media print {
+  @page {
+    size: A4;
+    margin: 37mm 26mm 35mm 28mm;
+  }
+
+  body {
+    font-family: "FangSong", "仿宋", "STFangsong", serif;
+    font-size: 16pt;
+    line-height: 28pt;
+    color: #000;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
