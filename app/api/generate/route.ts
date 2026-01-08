@@ -2,6 +2,9 @@ import { NextRequest } from "next/server";
 import { buildPrompt } from "@/lib/prompts";
 import { DocumentType } from "@/lib/document-types";
 
+export const runtime = "edge";
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const { type, fields } = await req.json();
