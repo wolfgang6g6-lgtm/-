@@ -24,6 +24,9 @@ export async function POST(req: NextRequest) {
     const apiKey = process.env.OPENAI_API_KEY;
     const apiBase = process.env.OPENAI_API_BASE || "https://api.openai.com/v1";
     const model = process.env.OPENAI_MODEL || "gpt-3.5-turbo";
+    const fallbackModel = process.env.OPENAI_FALLBACK_MODEL || "";
+    const maxRetries = Number(process.env.OPENAI_MAX_RETRIES || 2);
+    const retryDelayMs = Number(process.env.OPENAI_RETRY_DELAY_MS || 600);
 
     if (!apiKey) {
       return new Response(
@@ -32,41 +35,82 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 调用OpenAI API（流式）
-    const response = await fetch(`${apiBase}/chat/completions`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model,
-        messages: [
-          {
-            role: "system",
-            content: "你是一位专业的公文写作专家，精通中国党政机关公文格式标准。请直接输出公文内容，不要添加任何额外说明或解释。",
-          },
-          {
-            role: "user",
-            content: prompt,
-          },
-        ],
-        stream: true,
-        temperature: 0.7,
-        max_tokens: 2000,
-      }),
-    });
+    // 调用OpenAI API（重试与模型备用）
+    const requestWithModel = async (targetModel: string) => {
+      return await fetch(`${apiBase}/chat/completions`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: targetModel,
+          messages: [
+            {
+              role: "system",
+              content:
+                "你是一位专业的公文写作专家，精通中国党政机关公文格式标准。请直接输出公文内容，不要添加任何额外说明或解释。",
+            },
+            {
+              role: "user",
+              content: prompt,
+            },
+          ],
+          stream: true,
+          temperature: 0.7,
+          max_tokens: 2000,
+        }),
+      });
+    };
+
+    const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+    let currentModel = model;
+    let response = await requestWithModel(currentModel);
+    let attempts = 0;
+    while (!response.ok && attempts < maxRetries && (response.status === 429 || response.status === 503)) {
+      attempts += 1;
+      await sleep(retryDelayMs * attempts);
+      response = await requestWithModel(currentModel);
+    }
+
+    // 尝试备用模型
+    if (!response.ok && fallbackModel && currentModel !== fallbackModel) {
+      currentModel = fallbackModel;
+      attempts = 0;
+      response = await requestWithModel(currentModel);
+      while (!response.ok && attempts < maxRetries && (response.status === 429 || response.status === 503)) {
+        attempts += 1;
+        await sleep(retryDelayMs * attempts);
+        response = await requestWithModel(currentModel);
+      }
+    }
 
     if (!response.ok) {
       const errorText = await response.text();
+      const message =
+        response.status === 429
+          ? "当前服务繁忙，请稍后再试，已自动重试失败"
+          : `AI服务调用失败: ${response.status}`;
       console.error("API调用失败:", response.status, errorText);
-      return new Response(
-        JSON.stringify({
-          error: `AI服务调用失败: ${response.status}`,
-          detail: errorText
-        }),
-        { status: 500, headers: { "Content-Type": "application/json" } }
-      );
+      const encoder = new TextEncoder();
+      const stream = new ReadableStream({
+        start(controller) {
+          controller.enqueue(
+            encoder.encode(`data: ${JSON.stringify({ error: message })}\n\n`)
+          );
+          controller.enqueue(encoder.encode("data: [DONE]\n\n"));
+          controller.close();
+        },
+      });
+      return new Response(stream, {
+        headers: {
+          "Content-Type": "text/event-stream",
+          "Cache-Control": "no-cache, no-transform",
+          Connection: "keep-alive",
+          "X-Accel-Buffering": "no",
+        },
+      });
     }
 
     // 转发流式响应
