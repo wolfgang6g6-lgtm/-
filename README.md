@@ -2,10 +2,24 @@
 
 AI智能起草规范公文，符合GB/T 9704-2020标准。
 
-## 功能特性
+## 部署说明
 
-部署提示：Vercel 需配置 Production/Preview 的 OPENAI_API_KEY、OPENAI_API_BASE、OPENAI_MODEL 环境变量，并 Redeploy 生效。
-如果线上 /api/debug 显示为空，请执行一次 Redeploy 或推送任意变更以触发部署。
+1. 环境变量配置：
+   - `OPENAI_API_KEY`: API 密钥
+   - `OPENAI_API_BASE`: API 基础地址 (例如 `https://yunwu.ai/v1`)
+   - `OPENAI_MODEL`: 主模型 (推荐 `claude-3-5-sonnet-latest`)
+   - `OPENAI_FALLBACK_MODEL`: 备用模型 (当主模型过载时自动切换，推荐 `claude-3-5-haiku-latest`)
+   - `OPENAI_MAX_RETRIES`: 重试次数 (推荐 `3`)
+   - `OPENAI_RETRY_DELAY_MS`: 重试延迟 (推荐 `2000`)
+
+2. 线上调试：
+   - 访问 `/api/debug` 查看环境变量是否正确加载（不显示 Key）。
+   - 访问 `/api/ping` 测试 API 连接。
+
+## 最近更新
+- **429 错误自动恢复**: 当遇到 "上游负载已饱和" 错误时，系统会自动重试并切换到备用模型 (Haiku)，确保生成功能可用。
+
+## 功能特性
 
 - **6种公文类型**：通知、请示、报告、合同、会议纪要、工作总结
 - **AI智能生成**：输入关键信息，自动生成规范公文
