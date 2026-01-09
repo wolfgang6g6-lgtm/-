@@ -4,6 +4,8 @@ AI智能起草规范公文，符合GB/T 9704-2020标准。
 
 ## 功能特性
 
+部署提示：Vercel 需配置 Production/Preview 的 OPENAI_API_KEY、OPENAI_API_BASE、OPENAI_MODEL 环境变量，并 Redeploy 生效。
+
 - **6种公文类型**：通知、请示、报告、合同、会议纪要、工作总结
 - **AI智能生成**：输入关键信息，自动生成规范公文
 - **流式输出**：打字机效果，实时显示生成内容
