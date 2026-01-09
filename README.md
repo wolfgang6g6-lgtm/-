@@ -7,8 +7,8 @@ AI智能起草规范公文，符合GB/T 9704-2020标准。
 1. 环境变量配置：
    - `OPENAI_API_KEY`: API 密钥
    - `OPENAI_API_BASE`: API 基础地址 (例如 `https://yunwu.ai/v1`)
-   - `OPENAI_MODEL`: 主模型 (推荐 `claude-3-5-sonnet-latest`)
-   - `OPENAI_FALLBACK_MODEL`: 备用模型 (当主模型过载时自动切换，推荐 `claude-3-5-haiku-latest`)
+   - `OPENAI_MODEL`: 主模型 (推荐 `claude-3-5-sonnet-20241022`)
+   - `OPENAI_FALLBACK_MODEL`: 备用模型 (当主模型过载时自动切换，推荐 `claude-3-5-haiku-20241022`)
    - `OPENAI_MAX_RETRIES`: 重试次数 (推荐 `3`)
    - `OPENAI_RETRY_DELAY_MS`: 重试延迟 (推荐 `2000`)
 
