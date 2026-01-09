@@ -2,7 +2,6 @@ import { NextRequest } from "next/server";
 import { buildPrompt } from "@/lib/prompts";
 import { DocumentType } from "@/lib/document-types";
 
-export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
@@ -25,8 +24,8 @@ export async function POST(req: NextRequest) {
     const apiBase = process.env.OPENAI_API_BASE || "https://api.openai.com/v1";
     const model = process.env.OPENAI_MODEL || "gpt-3.5-turbo";
     const fallbackModel = process.env.OPENAI_FALLBACK_MODEL || "";
-    const maxRetries = Number(process.env.OPENAI_MAX_RETRIES || 2);
-    const retryDelayMs = Number(process.env.OPENAI_RETRY_DELAY_MS || 600);
+    const maxRetries = Number(process.env.OPENAI_MAX_RETRIES || 3);
+    const retryDelayMs = Number(process.env.OPENAI_RETRY_DELAY_MS || 3000);
 
     if (!apiKey) {
       return new Response(
